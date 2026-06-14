@@ -48,6 +48,7 @@ payload samples, or production capture logic.
 - [Aura container](docs/container.md) explains the header/body/footer shape.
 - [Field programs](docs/field-programs.md) explains compact decode instructions.
 - [Schemas](docs/schemas.md) explains logical schema construction.
+- [Schema header evaluation](docs/schema-header-evaluation.md) records the latest schema-driven candle, tick, and orderbook probes.
 - [Chunked storage](docs/chunking.md) explains independent compression chunks.
 - [Compression policy](docs/compression.md) explains why chunks beat whole-file streams.
 - [Aura1 block padding](docs/hot-padding.md) explains fixed-width replay blocks.
