@@ -36,7 +36,7 @@ dataset                         rows     raw i64     .aura       .aura0      .au
 LTCUSDT 90d 1m candles          129600   6220800     6221728     2349185     6220987     n/a
 Bybit ETHUSDT tick sample       250000   14000000    14002784    7656424     10500179    n/a
 Grimoire Bybit 900s book rows   79136    5064704     5067151     1751082     3640466     679447
-Grimoire parented blind run     79136    5064704     5067510     371922      3640677     n/a
+Grimoire parented grouped run   79136    5064704     5067618     330921      3640785     n/a
 ```
 
 Debug-build decode timings from the same run:
@@ -72,10 +72,12 @@ For Grimoire-style orderbook rows, the `128` repeated-child scope is the core
 header signal. Richer repeated parent bytes can express that price is structured
 under the partition slot and that quantity/flag fields are structured under the
 price slot. The planner must score those relationships instead of forcing
-related deltas; on the blind parented run, Aura0 chose direct streams where
-related residuals were larger and sparse presence streams where they were
-smaller. That reduced the parented-header `.aura0` from the earlier 794558-byte
-bad-delta result to 371922 bytes on the same decoded rows.
+related deltas. On the parented grouped run, Aura0 stamped generic partition run
+lengths, optional runs-per-event, grouped event-value streams, partition-based
+first price offsets, inside-run price deltas, and sparse presence streams. That
+reduced the parented-header `.aura0` from the earlier 794558-byte bad-delta
+result to 330921 bytes on the same decoded rows, with ingest, Aura0, and Aura1
+decode checks all matching the normalized rows.
 
 ## Caveats
 
