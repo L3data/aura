@@ -77,8 +77,8 @@ The Bybit tick run used the first 50000 trades from each public archive day
 compressed upstream, and the current generic i64 writer is still all-memory.
 That is a writer scalability limitation, not a schema-header ambiguity.
 
-The scoped grouped writer currently proves the header relationship is clear
-enough and round-trips rows, but it is not yet the default `.aura0` compiled
-profile path. To make it the profile path, the stamped footer needs a grouped
-body instruction so the footer, not Rust-side dispatch, tells the decoder when
-to use grouped event/child streams.
+The generic planner now proves the header relationship is clear enough and is
+part of the `.aura -> .aura0` conversion path. Ingest stamps the generic Aura0
+plan into the `.aura` footer. Conversion writes an Aura0 body from that stamped
+plan and preserves the same plan in the compiled footer so decode does not need
+Rust-side re-inference.
