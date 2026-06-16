@@ -7,7 +7,12 @@ The probe used the actual Aura `records` writer/decoder plus the scoped grouped
 writer in `src/scoped.rs`. Source-specific parsing stayed outside the repo in a
 temporary harness.
 
-## Header maps
+## Legacy probe maps
+
+These measurements used the earlier compact map where `255` marked timestamp
+and `128..254` marked repeated child scope. The results are still useful as
+transform evidence, but the byte assignments are not the current v1 schema
+dialect. The current dialect is documented in `docs/schemas.md`.
 
 ```text
 LTCUSDT 1m candles
@@ -68,17 +73,18 @@ into two i64 halves for this probe; stats must not attempt signed previous
 deltas when adjacent opaque halves span more than the signed i64 delta range.
 That overflow case is covered by a regression test.
 
-For Grimoire-style orderbook rows, the `128` repeated-child scope is the core
-header signal. Richer repeated parent bytes can express that price is structured
-under the partition slot and that quantity/flag fields are structured under the
-price slot. The planner must score those relationships instead of forcing
-related deltas. On the parented grouped run, Aura0 stamped generic partition run
-lengths, optional runs-per-event, grouped event-value streams, partition-based
-first price offsets, inside-run price deltas, a multi-slot sparse presence map,
-packed dictionaries for nonzero quantity streams, and a presence-derived flag.
-That reduced the parented-header `.aura0` from the earlier 794558-byte
-bad-delta result to 276998 bytes on the same decoded rows, with ingest, Aura0,
-and Aura1 decode checks all matching the normalized rows.
+For Grimoire-style orderbook rows, the old `128` repeated-child scope proved
+that orderbook data needs explicit grouping, not hundreds of flat level slots.
+In the current v1 dialect that idea is represented with group bytes `201-239`
+and, for bid/ask structures, the scoped dual-domain wrapper `200`. The planner
+must score those relationships instead of forcing related deltas. On the
+parented grouped run, Aura0 stamped generic partition run lengths, optional
+runs-per-event, grouped event-value streams, partition-based first price
+offsets, inside-run price deltas, a multi-slot sparse presence map, packed
+dictionaries for nonzero quantity streams, and a presence-derived flag. That
+reduced the parented-header `.aura0` from the earlier 794558-byte bad-delta
+result to 276998 bytes on the same decoded rows, with ingest, Aura0, and Aura1
+decode checks all matching the normalized rows.
 
 ## Caveats
 
