@@ -32,6 +32,15 @@ Grimoire Bybit orderbook levels, parented repeated slots
   map:   255 0 0 128 132 133 133 133
 ```
 
+Current-byte equivalents:
+
+```text
+LTCUSDT 1m candles:               100 0 2 2 2 0
+Bybit ETHUSDT trades:             100 0 0 0 0 0 0
+Grimoire orderbook levels:        100 0 0 205 0 0 0 0
+Parented Grimoire orderbook rows: 100 0 0 205 4 5 5 5
+```
+
 ## Results
 
 All rows round-tripped through decode checks with no corruption.
