@@ -8,8 +8,9 @@ The public model is intentionally generic:
 
 - `.aura` stores normalized logical facts with generous integer fields and
   footer optimization stats when available,
-- a compact v1 schema header defines positional fields, direct/derived parent
-  refs, repeated groups, booleans/enums, timestamps, and opaque streams,
+- a compact v1 schema header defines positional fields, direct parent refs,
+  derived expression refs, repeated groups, booleans/enums, timestamps, and
+  opaque streams,
 - `.aura0` is the compact compiled level with code-only decode instructions,
 - `.aura1` is the replay-optimized compiled level with code-only decode
   instructions.
@@ -48,7 +49,7 @@ payload samples, or production capture logic.
 - [Aura container](docs/container.md) explains the header/body/footer shape.
 - [Field programs](docs/field-programs.md) explains compact decode instructions.
 - [Schemas](docs/schemas.md) explains logical schema construction.
-- [Schema header evaluation](docs/schema-header-evaluation.md) records the latest schema-driven candle, tick, and orderbook probes.
+- [Schema header evaluation](docs/schema-header-evaluation.md) records the latest schema-driven value, tick, and orderbook probes.
 - [Chunked storage](docs/chunking.md) explains independent compression chunks.
 - [Compression policy](docs/compression.md) explains why chunks beat whole-file streams.
 - [Aura1 block padding](docs/hot-padding.md) explains fixed-width replay blocks.

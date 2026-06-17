@@ -64,16 +64,29 @@ Grimoire Bybit 900s book rows   141.7 ms        49.2 ms         77.9 ms
 
 ## Findings
 
-For candles, the parent map is enough. The writer used the open/high/low/close
-relationship to choose candle-shape field programs:
+For candle-like rows, this historical probe let the writer choose
+open/high/low/close shape programs from parent relationships alone:
 
 ```text
 ts      implicit fixed step
 open    previous close offset
-high    max(open, close) wick offset
-low     min(open, close) wick offset
+high    max(open, close) residual
+low     min(open, close) residual
 close   open-relative offset
 volume  base-offset bitpack
+```
+
+That behavior is no longer the schema contract. Parent bytes authorize direct
+related deltas only. The current header dialect uses `101-199` derived
+expression refs for min/max residual calculations, with the operation and input
+slots defined in the schema header. The equivalent current map for the same
+shape would mark the min/max-derived output slots with expression refs:
+
+```text
+100 0 102 103 2 0
+
+expr2: output slot 2 = max(slot 1, slot 4) + residual
+expr3: output slot 3 = min(slot 1, slot 4) - residual
 ```
 
 For ticks, the plain root map is enough. The useful transforms are previous-row
