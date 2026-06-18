@@ -23,11 +23,11 @@ Bybit ETHUSDT trades with UUID split into two i64 halves
   slots: ts, uuid_hi, uuid_lo, price, size, side, flag
   map:   255 0 0 0 0 0 0
 
-Grimoire Bybit orderbook levels
+Orderbook repeated levels
   slots: ts, sequence_final, sequence_primary, side, price, qty_a, qty_b, flag
   map:   255 0 0 128 128 128 128 128
 
-Grimoire Bybit orderbook levels, parented repeated slots
+Orderbook repeated levels, parented repeated slots
   slots: ts, sequence_final, sequence_primary, side, price, qty_a, qty_b, flag
   map:   255 0 0 128 132 133 133 133
 ```
@@ -37,8 +37,8 @@ Current-byte equivalents:
 ```text
 LTCUSDT 1m candles:               100 0 2 2 2 0
 Bybit ETHUSDT trades:             100 0 0 0 0 0 0
-Grimoire orderbook levels:        100 0 0 205 0 0 0 0
-Parented Grimoire orderbook rows: 100 0 0 205 4 5 5 5
+Orderbook repeated levels:        100 0 0 205 0 0 0 0
+Parented orderbook rows:          100 0 0 205 4 5 5 5
 ```
 
 ## Results
@@ -49,8 +49,8 @@ All rows round-tripped through decode checks with no corruption.
 dataset                         rows     raw i64     .aura       .aura0      .aura1      scoped grouped
 LTCUSDT 90d 1m candles          129600   6220800     6221728     2349185     6220987     n/a
 Bybit ETHUSDT tick sample       250000   14000000    14002784    7656424     10500179    n/a
-Grimoire Bybit 900s book rows   79136    5064704     5067151     1751082     3640466     679447
-Grimoire parented grouped run   79136    5064704     5067667     276998      3640834     n/a
+Orderbook 900s rows             79136    5064704     5067151     1751082     3640466     679447
+Orderbook parented grouped run  79136    5064704     5067667     276998      3640834     n/a
 ```
 
 Debug-build decode timings from the same run:
@@ -59,7 +59,7 @@ Debug-build decode timings from the same run:
 dataset                         .aura0 decode   .aura1 decode   scoped grouped decode
 LTCUSDT 90d 1m candles          191.1 ms        77.2 ms         n/a
 Bybit ETHUSDT tick sample       497.7 ms        143.3 ms        n/a
-Grimoire Bybit 900s book rows   141.7 ms        49.2 ms         77.9 ms
+Orderbook 900s rows             141.7 ms        49.2 ms         77.9 ms
 ```
 
 ## Findings
@@ -95,7 +95,7 @@ into two i64 halves for this probe; stats must not attempt signed previous
 deltas when adjacent opaque halves span more than the signed i64 delta range.
 That overflow case is covered by a regression test.
 
-For Grimoire-style orderbook rows, the old `128` repeated-child scope proved
+For orderbook-style repeated rows, the old `128` repeated-child scope proved
 that orderbook data needs explicit grouping, not hundreds of flat level slots.
 In the current v1 dialect that idea is represented with group bytes `201-239`
 and, for bid/ask structures, the scoped dual-domain wrapper `200`. The planner
